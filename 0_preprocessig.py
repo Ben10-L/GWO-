@@ -1,46 +1,54 @@
+from pathlib import Path
+
 import numpy as np
-import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 
 
-#Fix seed
 SEED = 42
-np.random.seed(SEED)
 
-# __data check
-df = pd.read_csv("data/movement_libras.data", header=None)   
-X, y = df.iloc[:, :-1], df.iloc[:, -1]
-X.columns = [f"f{i}" for i in range(X.shape[1])]
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
 
-#Shape X: (360, 90)
-print("Shape X:", X.shape)
-# 15 classes
-print("Classes :", y.nunique())
-# balanced classes 24 sample each , 24 x 15 = 360
-y.value_counts().sort_index()
+FILES = [
+    "mfeat-fac",
+    "mfeat-fou",
+    "mfeat-kar",
+    "mfeat-mor",
+    "mfeat-pix",
+    "mfeat-zer",
+]
 
-# 0
-print("Missing values:", int(X.isnull().sum().sum()))
-X = X.fillna(X.mean())
-X.describe().T.head()
 
-# __split
+# Load and combine all feature groups
+blocks = [np.loadtxt(DATA_DIR / name) for name in FILES]
+X = np.hstack(blocks)
+
+# 10 classes, 200 samples per class
+y = np.repeat(np.arange(10), 200)
+
+assert X.shape == (2000, 649)
+
+
+# 70% train / 30% final test
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.30, stratify=y, random_state=SEED)
-print(X_train.shape, X_test.shape)
+    X,
+    y,
+    test_size=0.30,
+    stratify=y,
+    random_state=SEED,
+)
 
-# __Scaling
-#scaler = StandardScaler()
-#X_train_s = pd.DataFrame(scaler.fit_transform(X_train), columns=X.columns)
-#X_test_s = pd.DataFrame(scaler.transform(X_test), columns=X.columns)
 
-# __Save
-train = X_train.copy() 
-train["target"] = y_train.values
-test = X_test.copy()
-test["target"] = y_test.values
-train.to_csv("data/libras_train.csv", index=False)
-test.to_csv("data/libras_test.csv", index=False)
+np.savez(
+    DATA_DIR / "data.npz",
+    X_train=X_train,
+    X_test=X_test,
+    y_train=y_train,
+    y_test=y_test,
+)
 
-print("Saved:", train.shape, test.shape)
+
+print("Dataset :", X.shape)
+print("Train   :", X_train.shape)
+print("Test    :", X_test.shape)
+print("Classes :", len(np.unique(y)))
