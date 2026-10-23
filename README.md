@@ -166,10 +166,6 @@ The pipeline writes experiment artifacts under `results/`:
 
 Additional packages are declared in `requirements.txt`.
 
-## References
-
-1. Mirjalili, S., Mirjalili, S. M., & Lewis, A. (2014). *Grey Wolf Optimizer*. Advances in Engineering Software, 69, 46–61. https://doi.org/10.1016/j.advengsoft.2013.12.007
-2. UCI Machine Learning Repository. *Multiple Features Dataset*. https://archive.ics.uci.edu/dataset/72/multiple+features
 
 ## Repository
 
