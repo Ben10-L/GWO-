@@ -172,7 +172,3 @@ Additional packages are declared in `requirements.txt`.
 Developed as a practical study of **metaheuristic optimization for machine learning feature selection**.
 
 **GitHub:** [Ben10-L/GWO-](https://github.com/Ben10-L/GWO-)
-
----
-
-If you use the code in academic work, please cite the original GWO publication and the dataset source. A license has not been specified in this repository; check with the maintainer before assuming reuse permissions.
